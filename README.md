@@ -22,5 +22,5 @@
 |`%groupstats_<group>_bblr%`            |player's beds broken/lost ratio.
 |`%groupstats_<group>_wlr%`            |player's win/lose ratio.            |            |
 
-Originial Creator: [Join the I6y's Hub Discord Server](https://discord.gg/UTu2vRUuge)
+Originial Creator: [Join the I6y's Hub Discord Server](https://discord.gg/UTu2vRUuge)<br>  
 Questions? [Join Lagggpixel's Plugins Discord Server](https://discord.gg/y3AmV5jXdf)
