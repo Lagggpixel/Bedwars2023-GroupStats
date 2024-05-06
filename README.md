@@ -1,5 +1,5 @@
-# BedWars1058 GroupStats Addon
- A BedWars1058 addon that adds placeholders for getting statistics of an player filtered by a Arena Group.  Supports MySQL and SQLite. 
+# BedWars2023 GroupStats Addon
+ A BedWars2023 addon that adds placeholders for getting statistics of an player filtered by a Arena Group.  Supports MySQL and SQLite. 
  
 ## Placeholders
 #### NOTE:  Use overAll as <group> to get overall statistics. Example, %groupstats_overAll_gamesPlayed%
@@ -22,5 +22,5 @@
 |`%groupstats_<group>_bblr%`            |player's beds broken/lost ratio.
 |`%groupstats_<group>_wlr%`            |player's win/lose ratio.            |            |
 
-Questions? [Join the I6y's Hub Discord Server](https://discord.gg/UTu2vRUuge)
-
+Originial Creator: [Join the I6y's Hub Discord Server](https://discord.gg/UTu2vRUuge)
+Questions? [Join Lagggpixel's Plugins Discord Server](https://discord.gg/y3AmV5jXdf)
