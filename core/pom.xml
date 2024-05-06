@@ -5,8 +5,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>BedWars1058-GroupStats</artifactId>
-    <groupId>me.infinity.groupstats</groupId>
+    <artifactId>BedWars2023-GroupStats</artifactId>
+    <groupId>me.lagggpixel.groupstats</groupId>
     <version>7.0-SNAPSHOT</version>
   </parent>
 
@@ -14,7 +14,7 @@
   <packaging>jar</packaging>
   <version>${project.parent.version}</version>
 
-  <description>Addon for bedwars1058 to store and fetch player statistics and sorting into groups.
+  <description>Addon for bedwars2023 to store and fetch player statistics and sorting into groups.
   </description>
   <properties>
     <java.version>11</java.version>
@@ -85,8 +85,8 @@
       <url>https://oss.sonatype.org/content/groups/public/</url>
     </repository>
     <repository>
-      <id>andrei1058</id>
-      <url>https://repo.andrei1058.dev/releases/</url>
+      <id>bedwars2023-releases</id>
+      <url>https://repo.tomkeuper.com/repository/snapshots/</url>
     </repository>
     <repository>
       <id>placeholderapi</id>
@@ -118,9 +118,9 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>com.andrei1058.bedwars</groupId>
+      <groupId>com.tomkeuper.bedwars</groupId>
       <artifactId>bedwars-api</artifactId>
-      <version>23.12.2</version>
+      <version>1.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -136,9 +136,9 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>me.infinity.groupstats</groupId>
+      <groupId>me.lagggpixel.groupstats</groupId>
       <artifactId>api</artifactId>
-      <version>${project.parent.version}</version>
+      <version>7.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>

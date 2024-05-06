@@ -1,4 +1,4 @@
-package me.infinity.groupstats.core.manager;
+package me.lagggpixel.groupstats.core.manager;
 
 import lombok.RequiredArgsConstructor;
 

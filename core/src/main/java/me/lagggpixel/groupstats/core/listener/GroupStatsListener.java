@@ -1,19 +1,20 @@
-package me.infinity.groupstats.core.listener;
+package me.lagggpixel.groupstats.core.listener;
 
-import com.andrei1058.bedwars.api.BedWars;
-import com.andrei1058.bedwars.api.arena.GameState;
-import com.andrei1058.bedwars.api.arena.IArena;
-import com.andrei1058.bedwars.api.arena.team.ITeam;
-import com.andrei1058.bedwars.api.events.gameplay.GameEndEvent;
-import com.andrei1058.bedwars.api.events.gameplay.GameStateChangeEvent;
-import com.andrei1058.bedwars.api.events.player.PlayerBedBreakEvent;
-import com.andrei1058.bedwars.api.events.player.PlayerKillEvent;
-import com.andrei1058.bedwars.api.events.player.PlayerLeaveArenaEvent;
 import java.util.UUID;
+
+import com.tomkeuper.bedwars.api.BedWars;
+import com.tomkeuper.bedwars.api.arena.GameState;
+import com.tomkeuper.bedwars.api.arena.IArena;
+import com.tomkeuper.bedwars.api.arena.team.ITeam;
+import com.tomkeuper.bedwars.api.events.gameplay.GameEndEvent;
+import com.tomkeuper.bedwars.api.events.gameplay.GameStateChangeEvent;
+import com.tomkeuper.bedwars.api.events.player.PlayerBedBreakEvent;
+import com.tomkeuper.bedwars.api.events.player.PlayerKillEvent;
+import com.tomkeuper.bedwars.api.events.player.PlayerLeaveArenaEvent;
 import lombok.SneakyThrows;
 import me.infinity.groupstats.api.GroupNode;
-import me.infinity.groupstats.core.GroupProfile;
-import me.infinity.groupstats.core.GroupStatsPlugin;
+import me.lagggpixel.groupstats.core.GroupProfile;
+import me.lagggpixel.groupstats.core.GroupStatsPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -200,6 +201,7 @@ public class GroupStatsListener implements Listener {
         GroupNode groupProfileStats = groupProfile.getGroupStatistics()
             .get(event.getArena().getGroup());
         groupProfileStats.setDeaths(groupProfileStats.getDeaths() + 1);
+        assert damager != null;
         GroupNode damagerStats = instance.getGroupManager().getGroupProfileCache()
             .get(damager.getUniqueId()).getGroupStatistics().get(event.getArena().getGroup());
         damagerStats.setKills(damagerStats.getKills() + 1);

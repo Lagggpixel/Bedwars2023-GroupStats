@@ -1,4 +1,4 @@
-package me.infinity.groupstats.core.manager;
+package me.lagggpixel.groupstats.core.manager;
 
 import com.j256.ormlite.jdbc.DataSourceConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
@@ -10,7 +10,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import lombok.Getter;
 import lombok.SneakyThrows;
-import me.infinity.groupstats.core.GroupStatsPlugin;
+import me.lagggpixel.groupstats.core.GroupStatsPlugin;
 import org.bukkit.configuration.ConfigurationSection;
 
 @Getter
@@ -44,7 +44,7 @@ public class DatabaseManager {
     hikariConfig.setConnectionTimeout(5000);
     hikariConfig.setUsername(this.username);
     hikariConfig.setPassword(this.password);
-    hikariConfig.setPoolName("bedwars1058-groupstats-pool");
+    hikariConfig.setPoolName("bedwars2023-groupstats-pool");
     hikariConfig.setConnectionTestQuery("SELECT 1;");
 
     if (this.dbEnabled) {

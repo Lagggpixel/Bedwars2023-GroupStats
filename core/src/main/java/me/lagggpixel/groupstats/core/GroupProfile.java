@@ -1,4 +1,4 @@
-package me.infinity.groupstats.core;
+package me.lagggpixel.groupstats.core;
 
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;

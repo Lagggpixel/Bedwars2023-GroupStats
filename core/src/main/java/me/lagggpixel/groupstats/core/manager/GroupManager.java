@@ -1,23 +1,24 @@
-package me.infinity.groupstats.core.manager;
+package me.lagggpixel.groupstats.core.manager;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.table.TableUtils;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import lombok.Getter;
 import lombok.SneakyThrows;
-import me.infinity.groupstats.core.GroupProfile;
-import me.infinity.groupstats.core.GroupStatsPlugin;
-import me.infinity.groupstats.core.listener.GroupStatsListener;
+import me.lagggpixel.groupstats.core.GroupProfile;
+import me.lagggpixel.groupstats.core.GroupStatsPlugin;
+import me.lagggpixel.groupstats.core.listener.GroupStatsListener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Getter
 public class GroupManager implements Listener {
@@ -36,14 +37,13 @@ public class GroupManager implements Listener {
     TableUtils.createTableIfNotExists(instance.getDatabaseManager().getConnectionSource(),
         GroupProfile.class);
 
-    if (instance.isBw1058()) {
-      this.groupProfileCache = new ConcurrentHashMap<>();
-      int updateTimer = instance.getConfig().getInt("update-timer");
-      instance.getServer().getScheduler()
-          .runTaskTimer(instance, new GroupUpdateTask(this), 20 * 60, 20L * 60 * updateTimer);
-      instance.getServer().getPluginManager().registerEvents(this, instance);
-      new GroupStatsListener(instance);
-    }
+    this.groupProfileCache = new ConcurrentHashMap<>();
+    int updateTimer = instance.getConfig().getInt("update-timer");
+    instance.getServer().getScheduler()
+        .runTaskTimer(instance, new GroupUpdateTask(this), 20 * 60, 20L * 60 * updateTimer);
+    instance.getServer().getPluginManager().registerEvents(this, instance);
+    new GroupStatsListener(instance);
+
   }
 
   @SneakyThrows

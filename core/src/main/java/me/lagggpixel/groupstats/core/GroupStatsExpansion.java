@@ -1,4 +1,4 @@
-package me.infinity.groupstats.core;
+package me.lagggpixel.groupstats.core;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -22,7 +22,7 @@ public class GroupStatsExpansion extends PlaceholderExpansion {
 
   @Override
   public @NotNull String getAuthor() {
-    return "infinity";
+    return "lagggpixel";
   }
 
   @Override
