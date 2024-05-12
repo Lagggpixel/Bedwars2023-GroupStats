@@ -65,9 +65,8 @@ public final class GroupStatsPlugin extends JavaPlugin implements CommandExecuto
     new GroupStatsExpansion(this).register();
 
     metrics = new Metrics(this, 16815);
-    this.metrics.addCustomChart(new SimplePie("storage",
-        () -> this.databaseManager.isDbEnabled() ? "MySQL": "SQLite"));
-    this.metrics.addCustomChart(new SimplePie("bedwars_plugin_type", () -> "bedwars2023"));
+    metrics.addCustomChart(new SimplePie("bedwars_plugin_type", () -> "bedwars2023"));
+    metrics.addCustomChart(new SimplePie("database_type", () -> databaseManager.isDbEnabled() ? "MySQL" : "SQLite"));
 
     this.getLogger().info("Loaded the plugin successfully.");
     this.startupCompleted = true;
