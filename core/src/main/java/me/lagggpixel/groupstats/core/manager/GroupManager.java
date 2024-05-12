@@ -26,7 +26,7 @@ public class GroupManager implements Listener {
   private final GroupStatsPlugin instance;
   private final Dao<GroupProfile, UUID> groupProfiles;
 
-  private Map<UUID, GroupProfile> groupProfileCache;
+  private final Map<UUID, GroupProfile> groupProfileCache;
 
   @SneakyThrows
   public GroupManager(GroupStatsPlugin instance) {
@@ -72,18 +72,21 @@ public class GroupManager implements Listener {
     groupProfiles.update(groupProfile);
   }
 
+  public void saveAll() {
+    if (this.getInstance().getServer().getOnlinePlayers().isEmpty()) {
+      return;
+    }
+    if (this.getGroupProfileCache().isEmpty()) {
+      return;
+    }
+    this.groupProfileCache.values().forEach(this::save);
+  }
+  
   public void saveAllAsync() {
     instance.getDatabaseManager().getHikariExecutor()
-        .execute(() -> {
-          if (this.getInstance().getServer().getOnlinePlayers().isEmpty()) {
-            return;
-          }
-          if (this.getGroupProfileCache().isEmpty()) {
-            return;
-          }
-          this.groupProfileCache.values().forEach(this::save);
-        });
+        .execute(this::saveAll);
   }
+  
 
   @EventHandler(priority = EventPriority.LOW)
   public void onJoin(PlayerJoinEvent event) {

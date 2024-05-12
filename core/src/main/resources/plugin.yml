@@ -1,6 +1,6 @@
 name: BedWars2023-GroupStats
 version: '${project.version}'
 main: me.lagggpixel.groupstats.core.GroupStatsPlugin
-softdepend: [ BedWars2023 ]
+softdepend: [ BedWars2023, BedWarsProxy ]
 authors: [ Lagggpixel, infinity ]
 description: Addon for bedwars2023 to store and fetch player statistics and sorting into groups.

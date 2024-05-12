@@ -22,6 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class GroupStatsPlugin extends JavaPlugin implements CommandExecutor {
 
   private boolean startupCompleted = false;
+  private boolean bw2023 = false;
 
   public static final Gson GSON = new GsonBuilder()
       .excludeFieldsWithoutExposeAnnotation()
@@ -38,14 +39,20 @@ public final class GroupStatsPlugin extends JavaPlugin implements CommandExecuto
 
   @Override
   public void onEnable() {
-
-    metrics = new Metrics(this, 21824);
-
     this.saveDefaultConfig();
 
     final PluginManager pluginManager = this.getServer().getPluginManager();
-    if (pluginManager.getPlugin("BedWars2023") != null) {
+    if (pluginManager.getPlugin("BedWars2023") == null) {
+      if (pluginManager.getPlugin("BedWarsProxy") == null) {
+        this.getLogger().severe("BedWars2023 or BedWarsProxy not found, disabling...");
+        this.setEnabled(false);
+        return;
+      } else {
+        this.getLogger().info("BedWarsProxy found, using it as a datastore.");
+      }
+    } else {
       this.getLogger().info("BedWars2023 found, activating standalone mode...");
+      this.bw2023 = true;
     }
 
     this.getLogger().info("Loading the plugin, please wait...");
@@ -59,6 +66,7 @@ public final class GroupStatsPlugin extends JavaPlugin implements CommandExecuto
     this.groupManager = new GroupManager(this);
     new GroupStatsExpansion(this).register();
 
+    metrics = new Metrics(this, 16815);
     this.getLogger().info("Loaded the plugin successfully.");
     this.startupCompleted = true;
   }
@@ -67,7 +75,9 @@ public final class GroupStatsPlugin extends JavaPlugin implements CommandExecuto
   public void onDisable() {
     this.getLogger().info("Disabling the plugin, please wait...");
     if (startupCompleted) {
-      this.groupManager.saveAllAsync();
+      if (isBw2023()) {
+        this.groupManager.saveAll();
+      }
       this.databaseManager.closeDatabase();
     }
     this.getLogger().info("Plugin disabled successfully.");
