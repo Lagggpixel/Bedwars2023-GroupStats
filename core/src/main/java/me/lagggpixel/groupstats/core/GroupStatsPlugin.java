@@ -8,12 +8,18 @@ import lombok.Getter;
 import me.infinity.groupstats.api.GroupNode;
 import me.lagggpixel.groupstats.core.manager.DatabaseManager;
 import me.lagggpixel.groupstats.core.manager.GroupManager;
+import me.lagggpixel.groupstats.core.manager.RequestsManager;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.eclipse.jetty.server.Authentication;
+import spark.Request;
+import spark.Response;
+import spark.Route;
+import spark.Spark;
 
 import java.lang.reflect.Type;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,6 +38,7 @@ public final class GroupStatsPlugin extends JavaPlugin implements CommandExecuto
   public static final Type STATISTIC_MAP_TYPE = new TypeToken<ConcurrentHashMap<String, GroupNode>>() {
   }.getType();
 
+  private RequestsManager requestsManager;
   private DatabaseManager databaseManager;
   private GroupManager groupManager;
 
@@ -62,6 +69,7 @@ public final class GroupStatsPlugin extends JavaPlugin implements CommandExecuto
 
     this.databaseManager = new DatabaseManager(this);
     this.groupManager = new GroupManager(this);
+    this.requestsManager = new RequestsManager(this);
     new GroupStatsExpansion(this).register();
 
     metrics = new Metrics(this, 16815);
@@ -80,6 +88,9 @@ public final class GroupStatsPlugin extends JavaPlugin implements CommandExecuto
         this.groupManager.saveAll();
       }
       this.databaseManager.closeDatabase();
+    }
+    if (requestsManager != null) {
+      requestsManager.onDisable();
     }
     this.getLogger().info("Plugin disabled successfully.");
   }
