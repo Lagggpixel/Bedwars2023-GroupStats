@@ -204,24 +204,28 @@ public class GroupStatsExpansion extends PlaceholderExpansion {
           deaths = 1;
         }
         result = this.getRatio(groupNode.getKills(), deaths);
+        break;
       case "fkdr":
         int finalDeaths = groupNode.getFinalDeaths();
         if (finalDeaths == 0) {
           finalDeaths = 1;
         }
         result = this.getRatio(groupNode.getFinalKills(), finalDeaths);
+        break;
       case "bblr":
         int bedsLost = groupNode.getBedsLost();
         if (bedsLost == 0) {
           bedsLost = 1;
         }
         result = this.getRatio(groupNode.getBedsBroken(), bedsLost);
+        break;
       case "wlr":
         int losses = groupNode.getLosses();
         if (losses == 0) {
           losses = 1;
         }
         result = this.getRatio(groupNode.getWins(), losses);
+        break;
       default:
         result = Double.NaN;
     }
