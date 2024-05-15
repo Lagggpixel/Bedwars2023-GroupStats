@@ -1,4 +1,4 @@
-package me.infinity.groupstats.api;
+package me.lagggpixel.groupstats.api;
 
 import com.google.gson.annotations.Expose;
 import lombok.AllArgsConstructor;

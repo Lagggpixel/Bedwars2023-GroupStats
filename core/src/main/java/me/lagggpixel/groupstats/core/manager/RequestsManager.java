@@ -1,6 +1,6 @@
 package me.lagggpixel.groupstats.core.manager;
 
-import me.infinity.groupstats.api.GroupNode;
+import me.lagggpixel.groupstats.api.GroupNode;
 import me.lagggpixel.groupstats.core.GroupProfile;
 import me.lagggpixel.groupstats.core.GroupStatsPlugin;
 import org.bukkit.Bukkit;

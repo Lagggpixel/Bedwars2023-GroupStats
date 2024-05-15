@@ -12,7 +12,7 @@ import com.tomkeuper.bedwars.api.events.player.PlayerBedBreakEvent;
 import com.tomkeuper.bedwars.api.events.player.PlayerKillEvent;
 import com.tomkeuper.bedwars.api.events.player.PlayerLeaveArenaEvent;
 import lombok.SneakyThrows;
-import me.infinity.groupstats.api.GroupNode;
+import me.lagggpixel.groupstats.api.GroupNode;
 import me.lagggpixel.groupstats.core.GroupProfile;
 import me.lagggpixel.groupstats.core.GroupStatsPlugin;
 import org.bukkit.Bukkit;

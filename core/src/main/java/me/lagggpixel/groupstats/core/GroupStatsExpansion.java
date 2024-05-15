@@ -5,7 +5,7 @@ import java.math.RoundingMode;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import me.infinity.groupstats.api.GroupNode;
+import me.lagggpixel.groupstats.api.GroupNode;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

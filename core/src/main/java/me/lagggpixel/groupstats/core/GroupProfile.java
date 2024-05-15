@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.Data;
-import me.infinity.groupstats.api.GroupNode;
+import me.lagggpixel.groupstats.api.GroupNode;
 
 @Data
 @DatabaseTable(tableName = "bedwars-groupstats")
