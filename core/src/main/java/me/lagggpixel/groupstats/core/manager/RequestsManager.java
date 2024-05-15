@@ -5,6 +5,7 @@ import me.lagggpixel.groupstats.core.GroupProfile;
 import me.lagggpixel.groupstats.core.GroupStatsPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.json.simple.JSONObject;
 import spark.Spark;
 
@@ -32,48 +33,49 @@ public class RequestsManager {
   }
 
   private void enableApi() {
-    if (!apiActive) {
-      return;
-    }
-    int port = this.plugin.getConfig().getInt("api.port");
-    if (port == 0) {
-      apiActive = false;
-      return;
-    }
-    Spark.port(port);
-    this.plugin.getLogger().info("Set GroupStats API to listen on port " + port);
-    /**
-     * @params uuid - UUID of the player
-     * @params name - Name of the player
-     */
-    Spark.get("/stats", (req, res) -> {
-      Set<String> params = req.queryParams();
-      OfflinePlayer offlinePlayer;
-      if (params.contains("uuid")) {
-        try {
-          UUID uuid = UUID.fromString(req.queryParams("uuid"));
-          offlinePlayer = Bukkit.getOfflinePlayer(uuid);
-        } catch (IllegalArgumentException ex) {
-          res.status(410);
-          return null;
+    new BukkitRunnable() {
+      @Override
+      public void run() {
+        if (!apiActive) {
+          return;
         }
-      } else if (params.contains("name")) {
-        String username = req.queryParams("name");
-        //noinspection deprecation
-        offlinePlayer = Bukkit.getOfflinePlayer(username);
-      } else {
-        res.status(411);
-        return null;
-      }
+        int port = plugin.getConfig().getInt("api.port");
+        if (port == 0) {
+          apiActive = false;
+          return;
+        }
+        plugin.getLogger().info("Detected that Rest API is enabled. Enabling Rest API now.");
+        Spark.port(port);
+        plugin.getLogger().info("Set GroupStats API to listen on port " + port);
+        Spark.get("/stats", (req, res) -> {
+          res.type("application/json");
+          Set<String> params = req.queryParams();
+          OfflinePlayer offlinePlayer;
+          if (params.contains("uuid")) {
+            try {
+              UUID uuid = UUID.fromString(req.queryParams("uuid"));
+              offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+            } catch (IllegalArgumentException ex) {
+              return getFailJson("Invalid UUID provided");
+            }
+          } else if (params.contains("name")) {
+            String username = req.queryParams("name");
+            //noinspection deprecation
+            offlinePlayer = Bukkit.getOfflinePlayer(username);
+          } else {
+            res.status(411);
+            return getFailJson("Invalid name provided");
+          }
 
-      JSONObject json = getPlayerStats(offlinePlayer);
-      if (json == null) {
-        res.status(400);
-        return null;
+          JSONObject json = getPlayerStats(offlinePlayer);
+          if (json == null) {
+            return getFailJson("Player data is empty");
+          }
+          res.status(201);
+          return json.toString();
+        });
       }
-      res.status(201);
-      return json.toString();
-    });
+    }.runTaskAsynchronously(plugin);
   }
 
   public void onDisable() {
@@ -84,6 +86,15 @@ public class RequestsManager {
   }
 
   @SuppressWarnings("unchecked")
+  private JSONObject getFailJson(String reason) {
+    JSONObject json = new JSONObject();
+    json.put("status", "Failed");
+    json.put("reason", reason);
+
+    return json;
+  }
+
+  @SuppressWarnings("unchecked")
   private JSONObject getPlayerStats(OfflinePlayer offlinePlayer) {
     GroupProfile profile = this.plugin.getGroupManager().fetchUnsafe(offlinePlayer.getUniqueId());
     if (profile == null) {
@@ -91,7 +102,7 @@ public class RequestsManager {
     }
 
     JSONObject json = new JSONObject();
-
+    json.put("status", "Success");
     json.put("name", offlinePlayer.getName());
 
     ConcurrentHashMap<String, GroupNode> stats = GroupStatsPlugin.GSON.fromJson(profile.getData(),
