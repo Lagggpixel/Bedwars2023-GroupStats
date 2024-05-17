@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import com.tomkeuper.bedwars.api.BedWars;
 import lombok.Getter;
 import me.lagggpixel.groupstats.api.GroupNode;
+import me.lagggpixel.groupstats.api.GroupStatsAPI;
 import me.lagggpixel.groupstats.core.manager.DatabaseManager;
 import me.lagggpixel.groupstats.core.manager.GroupManager;
 import me.lagggpixel.groupstats.core.manager.RequestsManager;

@@ -9,8 +9,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.json.simple.JSONObject;
 import spark.Spark;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,12 +19,12 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class RequestsManager {
 
-  private final GroupStatsPlugin plugin;
+  private final GroupStatsPlugin instance;
   private boolean apiActive;
 
   public RequestsManager(GroupStatsPlugin instance) {
-    this.plugin = instance;
-    this.apiActive = this.plugin.getConfig().getBoolean("api.enabled", false);
+    this.instance = instance;
+    this.apiActive = this.instance.getConfig().getBoolean("api.enabled", false);
     if (apiActive) {
       enableApi();
     }
@@ -39,14 +37,14 @@ public class RequestsManager {
         if (!apiActive) {
           return;
         }
-        int port = plugin.getConfig().getInt("api.port");
+        int port = instance.getConfig().getInt("api.port");
         if (port == 0) {
           apiActive = false;
           return;
         }
-        plugin.getLogger().info("Detected that Rest API is enabled. Enabling Rest API now.");
+        instance.getLogger().info("Detected that Rest API is enabled. Enabling Rest API now.");
         Spark.port(port);
-        plugin.getLogger().info("Set GroupStats API to listen on port " + port);
+        instance.getLogger().info("Set GroupStats API to listen on port " + port);
         Spark.get("/stats", (req, res) -> {
           res.type("application/json");
           Set<String> params = req.queryParams();
@@ -75,7 +73,7 @@ public class RequestsManager {
           return json.toString();
         });
       }
-    }.runTaskAsynchronously(plugin);
+    }.runTaskAsynchronously(this.instance);
   }
 
   public void onDisable() {
@@ -94,89 +92,89 @@ public class RequestsManager {
     return json;
   }
 
-    @SuppressWarnings("unchecked")
-    private JSONObject getPlayerStats(OfflinePlayer offlinePlayer) {
-        GroupProfile profile = this.instance.getGroupManager().fetchUnsafe(offlinePlayer.getUniqueId());
-        if (profile == null) {
-            return null;
-        }
-
-        JSONObject json = new JSONObject();
-        json.put("status", "Success");
-        json.put("name", offlinePlayer.getName());
-
-        ConcurrentHashMap<String, GroupNode> stats = GroupStatsPlugin.GSON.fromJson(profile.getData(),
-                GroupStatsPlugin.STATISTIC_MAP_TYPE);
-
-        JSONObject statsObject = new JSONObject();
-
-        //<editor-fold desc="Overall stats">
-        JSONObject overallStats = new JSONObject();
-        overallStats.put("games played", stats.isEmpty() ? 0
-                : stats.values().stream().mapToInt(GroupNode::getGamesPlayed).sum());
-        overallStats.put("beds broken", stats.isEmpty() ? 0
-                : stats.values().stream().mapToInt(GroupNode::getBedsBroken).sum());
-        overallStats.put("beds lost", stats.isEmpty() ? 0
-                : stats.values().stream().mapToInt(GroupNode::getBedsLost).sum());
-        overallStats.put("kills", stats.isEmpty() ? 0
-                : stats.values().stream().mapToInt(GroupNode::getKills).sum());
-        overallStats.put("deaths", stats.isEmpty() ? 0
-                : stats.values().stream().mapToInt(GroupNode::getDeaths).sum());
-        overallStats.put("final kills", stats.isEmpty() ? 0
-                : stats.values().stream().mapToInt(GroupNode::getFinalKills).sum());
-        overallStats.put("final deaths", stats.isEmpty() ? 0
-                : stats.values().stream().mapToInt(GroupNode::getFinalDeaths).sum());
-        overallStats.put("wins", stats.isEmpty() ? 0
-                : stats.values().stream().mapToInt(GroupNode::getWins).sum());
-        overallStats.put("losses", stats.isEmpty() ? 0
-                : stats.values().stream().mapToInt(GroupNode::getLosses).sum());
-        overallStats.put("winstreak", stats.isEmpty() ? 0
-                : stats.values().stream().mapToInt(GroupNode::getWinstreak).sum());
-        overallStats.put("highest winstreak", stats.isEmpty() ? 0
-                : stats.values().stream().mapToInt(GroupNode::getHighestWinstreak).sum());
-        overallStats.put("kdr", instance.getGroupStatsExpansion().getRatio(
-                stats.isEmpty() ? 0 : stats.values().stream().mapToInt(GroupNode::getKills).sum(),
-                stats.isEmpty() ? 0 : stats.values().stream().mapToInt(GroupNode::getDeaths).sum()));
-        overallStats.put("fkdr", instance.getGroupStatsExpansion().getRatio(
-                stats.isEmpty() ? 0 : stats.values().stream().mapToInt(GroupNode::getFinalKills).sum(),
-                stats.isEmpty() ? 0 : stats.values().stream().mapToInt(GroupNode::getFinalDeaths).sum()));
-        overallStats.put("bblr", instance.getGroupStatsExpansion().getRatio(
-                stats.isEmpty() ? 0 : stats.values().stream().mapToInt(GroupNode::getBedsBroken).sum(),
-                stats.isEmpty() ? 0 : stats.values().stream().mapToInt(GroupNode::getBedsLost).sum()));
-        overallStats.put("wlr", instance.getGroupStatsExpansion().getRatio(
-                stats.isEmpty() ? 0 : stats.values().stream().mapToInt(GroupNode::getWins).sum(),
-                stats.isEmpty() ? 0 : stats.values().stream().mapToInt(GroupNode::getLosses).sum()));
-        statsObject.put("over-all", overallStats);
-        //</editor-fold>
-
-
-        //<editor-fold desc="Per group stats">
-        stats.forEach((name, node) -> {
-            JSONObject groupJson = new JSONObject();
-
-            groupJson.put("games played", node.getGamesPlayed());
-            groupJson.put("beds broken", node.getBedsBroken());
-            groupJson.put("beds lost", node.getBedsLost());
-            groupJson.put("kills", node.getKills());
-            groupJson.put("deaths", node.getDeaths());
-            groupJson.put("final kills", node.getFinalKills());
-            groupJson.put("final deaths", node.getFinalDeaths());
-            groupJson.put("wins", node.getWins());
-            groupJson.put("losses", node.getLosses());
-            groupJson.put("winstreak", node.getWinstreak());
-            groupJson.put("highest winstreak", node.getHighestWinstreak());
-            groupJson.put("kdr", instance.getGroupStatsExpansion().getRatio(node, "kdr"));
-            groupJson.put("fkdr", instance.getGroupStatsExpansion().getRatio(node, "fkdr"));
-            groupJson.put("bblr", instance.getGroupStatsExpansion().getRatio(node, "bblr"));
-            groupJson.put("wlr", instance.getGroupStatsExpansion().getRatio(node, "wlr"));
-
-            statsObject.put(name, groupJson);
-        });
-        //</editor-fold>
-
-        json.put("stats", statsObject);
-
-        return json;
+  @SuppressWarnings("unchecked")
+  private JSONObject getPlayerStats(OfflinePlayer offlinePlayer) {
+    GroupProfile profile = this.instance.getGroupManager().fetchUnsafe(offlinePlayer.getUniqueId());
+    if (profile == null) {
+      return null;
     }
+
+    JSONObject json = new JSONObject();
+    json.put("status", "Success");
+    json.put("name", offlinePlayer.getName());
+
+    ConcurrentHashMap<String, GroupNode> stats = GroupStatsPlugin.GSON.fromJson(profile.getData(),
+        GroupStatsPlugin.STATISTIC_MAP_TYPE);
+
+    JSONObject statsObject = new JSONObject();
+
+    //<editor-fold desc="Overall stats">
+    JSONObject overallStats = new JSONObject();
+    overallStats.put("games played", stats.isEmpty() ? 0
+        : stats.values().stream().mapToInt(GroupNode::getGamesPlayed).sum());
+    overallStats.put("beds broken", stats.isEmpty() ? 0
+        : stats.values().stream().mapToInt(GroupNode::getBedsBroken).sum());
+    overallStats.put("beds lost", stats.isEmpty() ? 0
+        : stats.values().stream().mapToInt(GroupNode::getBedsLost).sum());
+    overallStats.put("kills", stats.isEmpty() ? 0
+        : stats.values().stream().mapToInt(GroupNode::getKills).sum());
+    overallStats.put("deaths", stats.isEmpty() ? 0
+        : stats.values().stream().mapToInt(GroupNode::getDeaths).sum());
+    overallStats.put("final kills", stats.isEmpty() ? 0
+        : stats.values().stream().mapToInt(GroupNode::getFinalKills).sum());
+    overallStats.put("final deaths", stats.isEmpty() ? 0
+        : stats.values().stream().mapToInt(GroupNode::getFinalDeaths).sum());
+    overallStats.put("wins", stats.isEmpty() ? 0
+        : stats.values().stream().mapToInt(GroupNode::getWins).sum());
+    overallStats.put("losses", stats.isEmpty() ? 0
+        : stats.values().stream().mapToInt(GroupNode::getLosses).sum());
+    overallStats.put("winstreak", stats.isEmpty() ? 0
+        : stats.values().stream().mapToInt(GroupNode::getWinstreak).sum());
+    overallStats.put("highest winstreak", stats.isEmpty() ? 0
+        : stats.values().stream().mapToInt(GroupNode::getHighestWinstreak).sum());
+    overallStats.put("kdr", this.instance.getGroupStatsExpansion().getRatio(
+        stats.isEmpty() ? 0 : stats.values().stream().mapToInt(GroupNode::getKills).sum(),
+        stats.isEmpty() ? 0 : stats.values().stream().mapToInt(GroupNode::getDeaths).sum()));
+    overallStats.put("fkdr", this.instance.getGroupStatsExpansion().getRatio(
+        stats.isEmpty() ? 0 : stats.values().stream().mapToInt(GroupNode::getFinalKills).sum(),
+        stats.isEmpty() ? 0 : stats.values().stream().mapToInt(GroupNode::getFinalDeaths).sum()));
+    overallStats.put("bblr", this.instance.getGroupStatsExpansion().getRatio(
+        stats.isEmpty() ? 0 : stats.values().stream().mapToInt(GroupNode::getBedsBroken).sum(),
+        stats.isEmpty() ? 0 : stats.values().stream().mapToInt(GroupNode::getBedsLost).sum()));
+    overallStats.put("wlr", this.instance.getGroupStatsExpansion().getRatio(
+        stats.isEmpty() ? 0 : stats.values().stream().mapToInt(GroupNode::getWins).sum(),
+        stats.isEmpty() ? 0 : stats.values().stream().mapToInt(GroupNode::getLosses).sum()));
+    statsObject.put("over-all", overallStats);
+    //</editor-fold>
+
+
+    //<editor-fold desc="Per group stats">
+    stats.forEach((name, node) -> {
+      JSONObject groupJson = new JSONObject();
+
+      groupJson.put("games played", node.getGamesPlayed());
+      groupJson.put("beds broken", node.getBedsBroken());
+      groupJson.put("beds lost", node.getBedsLost());
+      groupJson.put("kills", node.getKills());
+      groupJson.put("deaths", node.getDeaths());
+      groupJson.put("final kills", node.getFinalKills());
+      groupJson.put("final deaths", node.getFinalDeaths());
+      groupJson.put("wins", node.getWins());
+      groupJson.put("losses", node.getLosses());
+      groupJson.put("winstreak", node.getWinstreak());
+      groupJson.put("highest winstreak", node.getHighestWinstreak());
+      groupJson.put("kdr", this.instance.getGroupStatsExpansion().getRatio(node, "kdr"));
+      groupJson.put("fkdr", this.instance.getGroupStatsExpansion().getRatio(node, "fkdr"));
+      groupJson.put("bblr", this.instance.getGroupStatsExpansion().getRatio(node, "bblr"));
+      groupJson.put("wlr", this.instance.getGroupStatsExpansion().getRatio(node, "wlr"));
+
+      statsObject.put(name, groupJson);
+    });
+    //</editor-fold>
+
+    json.put("stats", statsObject);
+
+    return json;
+  }
 
 }
