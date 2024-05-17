@@ -1,14 +1,15 @@
 package me.lagggpixel.groupstats.core;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.lagggpixel.groupstats.api.GroupNode;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.concurrent.ConcurrentHashMap;
 
 @RequiredArgsConstructor
 public class GroupStatsExpansion extends PlaceholderExpansion {
@@ -228,6 +229,7 @@ public class GroupStatsExpansion extends PlaceholderExpansion {
         break;
       default:
         result = Double.NaN;
+        break;
     }
     return result;
   }

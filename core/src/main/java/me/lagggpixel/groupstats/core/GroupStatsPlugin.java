@@ -33,9 +33,12 @@ public final class GroupStatsPlugin extends JavaPlugin implements CommandExecuto
   public static final Type STATISTIC_MAP_TYPE = new TypeToken<ConcurrentHashMap<String, GroupNode>>() {
   }.getType();
 
-  private RequestsManager requestsManager;
   private DatabaseManager databaseManager;
   private GroupManager groupManager;
+  private GroupStatsExpansion groupStatsExpansion;
+  private RequestsManager requestsManager;
+
+  private GroupStatsAPI groupStatsAPI;
 
   private Metrics metrics;
 
@@ -67,9 +70,16 @@ public final class GroupStatsPlugin extends JavaPlugin implements CommandExecuto
     this.requestsManager = new RequestsManager(this);
     new GroupStatsExpansion(this).register();
 
-    metrics = new Metrics(this, 16815);
-    metrics.addCustomChart(new SimplePie("bedwars_plugin_type", () -> "bedwars2023"));
-    metrics.addCustomChart(new SimplePie("database_type", () -> databaseManager.isDbEnabled() ? "MySQL" : "SQLite"));
+    this.groupStatsExpansion = new GroupStatsExpansion(this);
+    this.groupStatsExpansion.register();
+
+    this.requestsManager = new RequestsManager(this);
+
+    this.metrics = new Metrics(this, 16815);
+    this.metrics.addCustomChart(new SimplePie("bedwars_plugin_type", () -> "bedwars2023"));
+    this.metrics.addCustomChart(new SimplePie("database_type", () -> databaseManager.isDbEnabled() ? "MySQL" : "SQLite"));
+
+    this.groupStatsAPI = new API(this);
 
     this.getLogger().info("Loaded the plugin successfully.");
     this.startupCompleted = true;
