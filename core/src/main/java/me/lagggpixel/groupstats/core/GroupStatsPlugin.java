@@ -5,9 +5,11 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.tomkeuper.bedwars.api.BedWars;
 import lombok.Getter;
-import me.infinity.groupstats.api.GroupNode;
+import me.lagggpixel.groupstats.api.GroupNode;
+import me.lagggpixel.groupstats.api.GroupStatsAPI;
 import me.lagggpixel.groupstats.core.manager.DatabaseManager;
 import me.lagggpixel.groupstats.core.manager.GroupManager;
+import me.lagggpixel.groupstats.core.manager.RequestsManager;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
@@ -34,6 +36,10 @@ public final class GroupStatsPlugin extends JavaPlugin implements CommandExecuto
 
   private DatabaseManager databaseManager;
   private GroupManager groupManager;
+  private GroupStatsExpansion groupStatsExpansion;
+  private RequestsManager requestsManager;
+
+  private GroupStatsAPI groupStatsAPI;
 
   private Metrics metrics;
 
@@ -62,11 +68,19 @@ public final class GroupStatsPlugin extends JavaPlugin implements CommandExecuto
 
     this.databaseManager = new DatabaseManager(this);
     this.groupManager = new GroupManager(this);
+    this.requestsManager = new RequestsManager(this);
     new GroupStatsExpansion(this).register();
 
-    metrics = new Metrics(this, 16815);
-    metrics.addCustomChart(new SimplePie("bedwars_plugin_type", () -> "bedwars2023"));
-    metrics.addCustomChart(new SimplePie("database_type", () -> databaseManager.isDbEnabled() ? "MySQL" : "SQLite"));
+    this.groupStatsExpansion = new GroupStatsExpansion(this);
+    this.groupStatsExpansion.register();
+
+    this.requestsManager = new RequestsManager(this);
+
+    this.metrics = new Metrics(this, 16815);
+    this.metrics.addCustomChart(new SimplePie("bedwars_plugin_type", () -> "bedwars2023"));
+    this.metrics.addCustomChart(new SimplePie("database_type", () -> databaseManager.isDbEnabled() ? "MySQL" : "SQLite"));
+
+    this.groupStatsAPI = new API(this);
 
     this.getLogger().info("Loaded the plugin successfully.");
     this.startupCompleted = true;
@@ -80,6 +94,9 @@ public final class GroupStatsPlugin extends JavaPlugin implements CommandExecuto
         this.groupManager.saveAll();
       }
       this.databaseManager.closeDatabase();
+    }
+    if (requestsManager != null) {
+      requestsManager.onDisable();
     }
     this.getLogger().info("Plugin disabled successfully.");
   }
